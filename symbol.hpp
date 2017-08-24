@@ -29,7 +29,7 @@ struct SymbolImpl<IOSetting::Raw> {
     static void read(std::istream& is, Symbol<S>& symbol) {
         auto first = is.get();
         unsigned counter = 0;
-        while (is.peek() == first && counter < 0x80) {
+        while (is.peek() == first && counter < 0x7F) {
             is.ignore();
             counter += 1;
         }
