@@ -28,7 +28,7 @@ struct SymbolImpl<IOSetting::Raw> {
     static constexpr IOSetting S = IOSetting::Raw;
     static void read(std::istream& is, Symbol<S>& symbol) {
         auto first = is.get();
-        unsigned counter = 1;
+        unsigned counter = 0;
         while (is.peek() == first && counter < 0x80) {
             is.ignore();
             counter += 1;
@@ -38,7 +38,7 @@ struct SymbolImpl<IOSetting::Raw> {
     }
 
     static void write(std::ostream& os, Symbol<S> symbol) {
-        for (unsigned char i = 0; i < symbol.count; ++i)
+        for (unsigned char i = 0; i < symbol.count + 1; ++i)
             os.put(symbol.token);
     }
 };
@@ -54,13 +54,13 @@ struct SymbolImpl<IOSetting::Compressed> {
             symbol.token = is.get();
         } else {
             // unencoded
-            symbol.count = 1;
+            symbol.count = 0;
             symbol.token = header;
         }
     }
 
     static void write(std::ostream& os, Symbol<S> symbol) {
-        if (symbol.count > 1) {
+        if (symbol.count > 0) {
             os.put(symbol.count | 0x80u);
             os.put(symbol.token);
         } else {
